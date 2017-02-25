@@ -1,0 +1,50 @@
+import simplegui
+interval = 100
+time = '0:00.0'
+t = 0
+
+def format(t):
+    global time
+    millis = t % 10 
+    sec = (t - millis) / 10 
+    mins = sec // 60
+    seconds = sec % 60 
+    if seconds >= 10:
+        time = str(mins) + ':' + str(seconds) + '.' + str(millis)
+    else:
+        time = str(mins) + ':0' + str(seconds) + '.' + str(millis) \
+        
+def start():
+    timer.start()
+
+def stop():
+    timer.stop()
+    
+
+def reset():
+    global t, time 
+    timer.stop()
+    t = 0
+    format(t)
+    
+def timer_handler():
+    global t 
+    t = t + 1
+    format(t)
+    
+def draw(canvas):
+    canvas.draw_text(time, [100,150], 48, "blue")
+
+frame = simplegui.create_frame("Stopwatch", 300, 300)
+# I could not create the game_count running and all those other things can't understand what to do.                                           
+
+
+
+frame.add_button("Start", start,100)                               
+frame.add_button("Stop", stop,100)
+frame.add_button("Reset", reset,100)
+frame.set_draw_handler(draw) 
+timer = simplegui.create_timer(interval, timer_handler)
+
+
+frame.start()
