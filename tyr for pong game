@@ -1,44 +1,50 @@
 import simplegui
 
 ball_pos = [225,225]
-ball_vel = [5,-5]
-poll_pos1 = [20,20]
-poll_vel1 = [20,450]
+ball_vel = [0,0]
+poll_pos1 = [10,20]
+poll_vel1 = [20,480]
 poll_pos2 = [480,480]
 poll_vel2 = [480,20]
-
+win_count = "0" 
 
 def draw(canvas):
-    global poll_pos1,poll_vel1,poll_pos2,poll_vel2
-    canvas.draw_circle(ball_pos,10,2,'Red','Red')
-    canvas.draw_line(poll_pos1,poll_vel1, 20, 'Blue')
-    canvas.draw_line(poll_pos2,poll_vel2,20, 'Blue')
-def keydown_handler(key):
-    global ball_pos,ball_vel
-    if (key == simplegui.KEY_MAP['right']):
-        ball_pos[0] = ball_pos[0] + ball_vel[0]
-    elif (key == simplegui.KEY_MAP["down"]):   
-        ball_pos[1] = ball_pos[1] - ball_vel[1]
-    elif (key == simplegui.KEY_MAP["up"]):
-        ball_pos[1] = ball_pos[1] + ball_vel[1]
-    elif (key == simplegui.KEY_MAP["left"]):
-        ball_pos[0] = ball_pos[0] - ball_vel[0]    
-def timer_handler():
-    global poll_pos1,poll_vel1,poll_pos2,poll_vel2
-    poll_vel1[1] = poll_vel1[1] - 10
-    poll_pos1[1] = poll_pos1[1] + 10
-    
-def timer_handler2():
-     if ( poll_vel1[1] == 500, poll_pos1[1] == 500):
-        poll_vel1[1] = poll_vel1[1] + 10
-        poll_pos1[1] = poll_pos1[1] - 10
-    
-    
-    
+    global win_count
+    ball_pos[0] += ball_vel[0]
+    ball_pos[1] += ball_vel[1]
+   
+    canvas.draw_polyline([poll_pos1,poll_vel1], 20, 'Blue')
+    canvas.draw_text(str(win_count),(230, 20), 12, 'white')
+    canvas.draw_circle(ball_pos,10,5,"Red")
+    if (ball_pos[0] < 10 or ball_pos[0] + 10 >500):
+        ball_vel[0] = -ball_vel[0]
+        win_count  = int(win_count) + 1 
+    if (ball_pos[1] <10 or ball_pos[1] + 10 > 500):
+        ball_vel[1] = -ball_vel[1]
+        win_count  = int(win_count) + 1
+def keyup(key):
+    if (key == simplegui.KEY_MAP['left']):
+        ball_vel[0] -= ball_vel[0]
+    elif (key == simplegui.KEY_MAP['right']):
+        ball_vel[0] -= ball_vel[0]
+    elif (key == simplegui.KEY_MAP['up']):
+        ball_vel[1] -= ball_vel[1]
+    elif (key == simplegui.KEY_MAP['down']):
+        ball_vel[1] -= ball_vel[1]
+        
+def keydown(key):
+    if (key == simplegui.KEY_MAP['left']):
+        ball_vel[0] -= 2
+    elif (key == simplegui.KEY_MAP['right']):
+        ball_vel[0] += 2
+    elif (key == simplegui.KEY_MAP['up']):
+        ball_vel[1] -= 2
+    elif (key == simplegui.KEY_MAP['down']):
+        ball_vel[1] += 2
+
 frame = simplegui.create_frame("Moving ball", 500,500)
-frame.set_keydown_handler(keydown_handler)
 frame.set_draw_handler(draw)
-timer = simplegui.create_timer(100, timer_handler)
-timer = simplegui.create_timer(100, timer_handler2)
-timer.start()
+frame.set_keydown_handler(keydown)
+frame.set_keyup_handler(keyup)
+frame.set_draw_handler(draw)
 frame.start()
